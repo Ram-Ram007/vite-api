@@ -1,24 +1,67 @@
-import './style.css'
-import javascriptLogo from './javascript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.js'
+import "./style.css";
 
-document.querySelector('#app').innerHTML = `
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-      <img src="${javascriptLogo}" class="logo vanilla" alt="JavaScript logo" />
-    </a>
-    <h1>Hello Vite!</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite logo to learn more
-    </p>
-  </div>
-`
+import { fetchRandomDogImage } from "./utils/dogApi";
+import { fetchAllDogList } from "./utils/dogApi";
 
-setupCounter(document.querySelector('#counter'))
+async function start(dog) {
+  try {
+    const res = await fetchRandomDogImage(dog);
+    const dogImage = document.querySelector("#animals img");
+    dogImage.src = res.data.message;
+    const loadingElement = document.getElementById("loading");
+    if (loadingElement) {
+    loadingElement.parentNode.removeChild(loadingElement);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getList() {
+  try {
+    const response = await fetchAllDogList();
+    const dogList = response.data.message;
+    const dogNames = Object.keys(dogList);
+    return dogNames;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function initialize() {
+  const dogNamesList = await getList();
+  appendToSelect(dogNamesList);
+}
+
+function appendToSelect(dogNamesList) {
+  const selectBreed = document.getElementById("dog-list");
+  let i = 1;
+  for (let item of dogNamesList) {
+    const option = document.createElement("option");
+    option.textContent = item;
+    option.setAttribute("id", i);
+    i++;
+    selectBreed.appendChild(option);
+  }
+}
+
+initialize(); 
+document.getElementById("getImg").addEventListener("click", function() {
+  const selectBreed = document.getElementById("dog-list");
+  const loadDiv = document.getElementById("load-div");
+  const loadingParagraph = document.createElement("p");
+  loadingParagraph.id = "loading";
+  loadingParagraph.textContent = "Loading ...";
+  loadDiv.appendChild(loadingParagraph);
+
+  const dogImage = document.querySelector("#animals img");
+  
+
+  start(selectBreed.value);
+});
+
+
+
+
+
+

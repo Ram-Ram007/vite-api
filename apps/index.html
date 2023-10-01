@@ -1,13 +1,21 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="js/jquery-3.7.1.min.js"></script>
   </head>
   <body>
-    <div id="app"></div>
+    <h1>Dogs Variety</h1>
+    <label for="dog-list">Select the breed</label>
+    <select name="dog-list" id="dog-list"></select>
+    <button id="getImg">Get image of dog</button>
+    <div id="load-div"></div>
+    <div id="animals">
+      <img/>
+    </div>
     <script type="module" src="/main.js"></script>
   </body>
 </html>
