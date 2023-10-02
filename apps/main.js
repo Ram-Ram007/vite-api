@@ -10,7 +10,7 @@ async function start(dog) {
     dogImage.src = res.data.message;
     const loadingElement = document.getElementById("loading");
     if (loadingElement) {
-    loadingElement.parentNode.removeChild(loadingElement);
+      loadingElement.parentNode.removeChild(loadingElement);
     }
   } catch (error) {
     console.log(error);
@@ -22,6 +22,7 @@ async function getList() {
     const response = await fetchAllDogList();
     const dogList = response.data.message;
     const dogNames = Object.keys(dogList);
+    console.log(dogNames);
     return dogNames;
   } catch (error) {
     console.log(error);
@@ -35,18 +36,17 @@ async function initialize() {
 
 function appendToSelect(dogNamesList) {
   const selectBreed = document.getElementById("dog-list");
-  let i = 1;
-  for (let item of dogNamesList) {
+  for (let i = 0; i < dogNamesList.length; i++) {
+    const item = dogNamesList[i];
     const option = document.createElement("option");
     option.textContent = item;
-    option.setAttribute("id", i);
-    i++;
     selectBreed.appendChild(option);
   }
 }
 
-initialize(); 
-document.getElementById("getImg").addEventListener("click", function() {
+
+initialize();
+document.getElementById("getImg").addEventListener("click", function () {
   const selectBreed = document.getElementById("dog-list");
   const loadDiv = document.getElementById("load-div");
   const loadingParagraph = document.createElement("p");
@@ -55,13 +55,6 @@ document.getElementById("getImg").addEventListener("click", function() {
   loadDiv.appendChild(loadingParagraph);
 
   const dogImage = document.querySelector("#animals img");
-  
 
   start(selectBreed.value);
 });
-
-
-
-
-
-
