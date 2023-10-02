@@ -1,23 +1,22 @@
 import "./style.css";
-
 import { fetchRandomDogImage } from "./utils/dogApi";
 import { fetchAllDogList } from "./utils/dogApi";
 
-async function start(dog) {
-  try {
-    const res = await fetchRandomDogImage(dog);
-    const dogImage = document.querySelector("#animals img");
-    dogImage.src = res.data.message;
-    const loadingElement = document.getElementById("loading");
-    if (loadingElement) {
-      loadingElement.parentNode.removeChild(loadingElement);
-    }
-  } catch (error) {
-    console.log(error);
+function showLoading() {
+  const loadingElement = document.querySelector("#loading");
+  if (loadingElement) {
+    loadingElement.style.display = "block";
   }
 }
 
-async function getList() {
+function hideLoading() {
+  const loadingElement = document.querySelector("#loading");
+  if (loadingElement) {
+    loadingElement.style.display = "none";
+  }
+}
+
+async function fetchDogList() {
   try {
     const response = await fetchAllDogList();
     const dogList = response.data.message;
@@ -29,13 +28,27 @@ async function getList() {
   }
 }
 
-async function initialize() {
-  const dogNamesList = await getList();
-  appendToSelect(dogNamesList);
+async function displayRandomDogImage(dogBreed) {
+  try {
+    showLoading(); // Show loading before making the API request
+
+    const res = await fetchRandomDogImage(dogBreed);
+    const dogImage = document.querySelector("#img");
+    dogImage.src = res.data.message;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    hideLoading(); // Hide loading after the API request completes (whether success or error)
+  }
 }
 
-function appendToSelect(dogNamesList) {
-  const selectBreed = document.getElementById("dog-list");
+async function start() {
+  const dogNamesList = await fetchDogList();
+  appendDogNamesToSelect(dogNamesList);
+}
+
+function appendDogNamesToSelect(dogNamesList) {
+  const selectBreed = document.querySelector("#dog-list");
   for (let i = 0; i < dogNamesList.length; i++) {
     const item = dogNamesList[i];
     const option = document.createElement("option");
@@ -44,17 +57,11 @@ function appendToSelect(dogNamesList) {
   }
 }
 
+start();
 
-initialize();
-document.getElementById("getImg").addEventListener("click", function () {
-  const selectBreed = document.getElementById("dog-list");
-  const loadDiv = document.getElementById("load-div");
-  const loadingParagraph = document.createElement("p");
-  loadingParagraph.id = "loading";
-  loadingParagraph.textContent = "Loading ...";
-  loadDiv.appendChild(loadingParagraph);
+document.querySelector("#button").addEventListener("click", function () {
+  const selectBreed = document.querySelector("#dog-list");
+  const dogImage = document.querySelector("#img");
 
-  const dogImage = document.querySelector("#animals img");
-
-  start(selectBreed.value);
+  displayRandomDogImage(selectBreed.value);
 });
